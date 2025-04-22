@@ -5,7 +5,7 @@
 
     <Configurations>Debug;Release</Configurations>
     <DocumentationFile>bin\$(Configuration)\YamlDotNet.xml</DocumentationFile>
-    <NoWarn>1591;1574;NU1507</NoWarn>
+    <NoWarn>1591;1574</NoWarn>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <WarningsAsErrors>true</WarningsAsErrors>
@@ -67,6 +67,7 @@
     <NoWarn>$(NoWarn);IDE0090</NoWarn>  <!-- 'new' expression can be simplified  -->
     <NoWarn>$(NoWarn);IDE0110</NoWarn>  <!-- Discard can be removed  -->
     <NoWarn>$(NoWarn);IDE0290</NoWarn>  <!-- Use primary constructor -->
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
   </PropertyGroup>
 
 </Project>
