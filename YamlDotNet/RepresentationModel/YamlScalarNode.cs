@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -71,16 +72,17 @@ namespace YamlDotNet.RepresentationModel
         /// <summary>
         /// Initializes a new instance of the <see cref="YamlScalarNode"/> class.
         /// </summary>
-        internal YamlScalarNode(IParser parser, DocumentLoadingState state)
+        internal YamlScalarNode(IParser parser, DocumentLoadingState state, bool consumeComments)
         {
-            Load(parser, state);
+            Load(parser, state, consumeComments);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Load(IParser parser, DocumentLoadingState state)
+        private void Load(IParser parser, DocumentLoadingState state, bool consumeComments)
         {
+            this.Comments = consumeComments ? parser.CurrentComments() : [];
+            
             var scalar = parser.Consume<Scalar>();
-
             Load(scalar, state);
 
             var value = scalar.Value;
@@ -224,7 +226,7 @@ namespace YamlDotNet.RepresentationModel
 
         void IYamlConvertible.Read(IParser parser, Type expectedType, ObjectDeserializer nestedObjectDeserializer)
         {
-            Load(parser, new DocumentLoadingState());
+            Load(parser, new DocumentLoadingState(), false);
         }
 
         void IYamlConvertible.Write(IEmitter emitter, ObjectSerializer nestedObjectSerializer)

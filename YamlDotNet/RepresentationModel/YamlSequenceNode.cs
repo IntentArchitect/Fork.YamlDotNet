@@ -67,8 +67,11 @@ namespace YamlDotNet.RepresentationModel
 
         private void Load(IParser parser, DocumentLoadingState state)
         {
+            this.Comments = parser.CurrentComments();
+
             var sequence = parser.Consume<SequenceStart>();
             Load(sequence, state);
+
             Style = sequence.Style;
 
             var hasUnresolvedAliases = false;

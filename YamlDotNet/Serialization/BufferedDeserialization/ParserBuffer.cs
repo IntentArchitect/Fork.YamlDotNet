@@ -21,8 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
+using YamlDotNet.RepresentationModel;
 
 namespace YamlDotNet.Serialization.BufferedDeserialization
 {
@@ -70,6 +72,11 @@ namespace YamlDotNet.Serialization.BufferedDeserialization
         /// Gets the current event. Returns null after <see cref="MoveNext" /> returns false.
         /// </summary>
         public ParsingEvent? Current => current?.Value;
+
+        public List<YamlComment> CurrentComments()
+        {
+            return Array.Empty<YamlComment>().ToList();
+        }
 
         /// <summary>
         /// Moves to the next event.

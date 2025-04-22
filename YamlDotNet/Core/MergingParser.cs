@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using YamlDotNet.Core.Events;
+using YamlDotNet.RepresentationModel;
 
 namespace YamlDotNet.Core
 {
@@ -46,6 +47,11 @@ namespace YamlDotNet.Core
         }
 
         public ParsingEvent? Current => iterator.Current?.Value;
+
+        public List<YamlComment> CurrentComments()
+        {
+            return Array.Empty<YamlComment>().ToList();
+        }
 
         public bool MoveNext()
         {

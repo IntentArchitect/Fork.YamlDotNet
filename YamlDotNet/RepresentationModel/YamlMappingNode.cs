@@ -59,22 +59,24 @@ namespace YamlDotNet.RepresentationModel
         /// <summary>
         /// Initializes a new instance of the <see cref="YamlMappingNode"/> class.
         /// </summary>
-        internal YamlMappingNode(IParser parser, DocumentLoadingState state)
+        internal YamlMappingNode(IParser parser, DocumentLoadingState state, bool consumeComments)
         {
-            Load(parser, state);
+            Load(parser, state, consumeComments);
         }
 
-        private void Load(IParser parser, DocumentLoadingState state)
+        private void Load(IParser parser, DocumentLoadingState state, bool consumeComments)
         {
             var mapping = parser.Consume<MappingStart>();
             Load(mapping, state);
             Style = mapping.Style;
 
+            this.Comments = consumeComments ? parser.CurrentComments() : [];
+
             var hasUnresolvedAliases = false;
             while (!parser.TryConsume<MappingEnd>(out var _))
             {
                 var key = ParseNode(parser, state);
-                var value = ParseNode(parser, state);
+                var value = ParseNode(parser, state, false);
 
                 if (!children.TryAdd(key, value))
                 {
@@ -381,7 +383,7 @@ namespace YamlDotNet.RepresentationModel
 
         void IYamlConvertible.Read(IParser parser, Type expectedType, ObjectDeserializer nestedObjectDeserializer)
         {
-            Load(parser, new DocumentLoadingState());
+            Load(parser, new DocumentLoadingState(), false);
         }
 
         void IYamlConvertible.Write(IEmitter emitter, ObjectSerializer nestedObjectSerializer)

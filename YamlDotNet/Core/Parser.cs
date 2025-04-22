@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using YamlDotNet.Core.Tokens;
+using YamlDotNet.RepresentationModel;
 using MappingStyle = YamlDotNet.Core.Events.MappingStyle;
 using ParsingEvent = YamlDotNet.Core.Events.ParsingEvent;
 using SequenceStyle = YamlDotNet.Core.Events.SequenceStyle;
@@ -70,7 +71,7 @@ namespace YamlDotNet.Core
         /// </summary>
         /// <param name="input">The input where the YAML stream is to be read.</param>
         public Parser(TextReader input)
-            : this(new Scanner(input))
+            : this(new Scanner(input, false))
         {
         }
 
@@ -88,6 +89,19 @@ namespace YamlDotNet.Core
         public ParsingEvent? Current { get; private set; }
 
         private readonly EventQueue pendingEvents = new EventQueue();
+
+        public List<YamlComment> CurrentComments()
+        {
+            List<YamlComment> currentComments = [];
+            while (pendingEvents.HasComments)
+            {
+                Events.Comment comment = pendingEvents.DequeueComment() as Events.Comment;
+
+                currentComments.Add(new YamlComment(comment.Value, comment.IsInline));
+            }
+
+            return currentComments;
+        }
 
         /// <summary>
         /// Moves to the next event.
@@ -1068,6 +1082,7 @@ namespace YamlDotNet.Core
             // If more levels are required, a more generic implementation should be used instead.
             private readonly Queue<ParsingEvent> highPriorityEvents = new Queue<ParsingEvent>();
             private readonly Queue<ParsingEvent> normalPriorityEvents = new Queue<ParsingEvent>();
+            private readonly Queue<ParsingEvent> commentEvents = new Queue<ParsingEvent>();
 
             public void Enqueue(ParsingEvent @event)
             {
@@ -1077,7 +1092,9 @@ namespace YamlDotNet.Core
                     case Events.EventType.DocumentStart:
                         highPriorityEvents.Enqueue(@event);
                         break;
-
+                    case Events.EventType.Comment:
+                        commentEvents.Enqueue(@event);
+                        break;
                     default:
                         normalPriorityEvents.Enqueue(@event);
                         break;
@@ -1091,11 +1108,24 @@ namespace YamlDotNet.Core
                     : normalPriorityEvents.Dequeue();
             }
 
+            public ParsingEvent DequeueComment()
+            {
+                return commentEvents.Dequeue();
+            }
+
             public int Count
             {
                 get
                 {
                     return highPriorityEvents.Count + normalPriorityEvents.Count;
+                }
+            }
+
+            public bool HasComments
+            {
+                get
+                {
+                    return commentEvents.Count > 0;
                 }
             }
         }

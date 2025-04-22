@@ -57,6 +57,8 @@ namespace YamlDotNet.RepresentationModel
         /// </summary>
         public Mark End { get; private set; } = Mark.Empty;
 
+        public List<YamlComment> Comments { get; set; } = [];
+
         /// <summary>
         /// Loads the specified event.
         /// </summary>
@@ -78,11 +80,11 @@ namespace YamlDotNet.RepresentationModel
         /// Parses the node represented by the next event in <paramref name="parser" />.
         /// </summary>
         /// <returns>Returns the node that has been parsed.</returns>
-        internal static YamlNode ParseNode(IParser parser, DocumentLoadingState state)
+        internal static YamlNode ParseNode(IParser parser, DocumentLoadingState state, bool consumeComments = true)
         {
             if (parser.Accept<Scalar>(out var _))
             {
-                return new YamlScalarNode(parser, state);
+                return new YamlScalarNode(parser, state, consumeComments);
             }
 
             if (parser.Accept<SequenceStart>(out var _))
@@ -92,8 +94,13 @@ namespace YamlDotNet.RepresentationModel
 
             if (parser.Accept<MappingStart>(out var _))
             {
-                return new YamlMappingNode(parser, state);
+                return new YamlMappingNode(parser, state, consumeComments);
             }
+
+            //if (parser.Accept<Comment>(out var _))
+            //{
+            //    return new YamlMappingNode(parser, state);
+            //}
 
             if (parser.TryConsume<AnchorAlias>(out var alias))
             {

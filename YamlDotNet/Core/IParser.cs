@@ -19,7 +19,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.Generic;
 using YamlDotNet.Core.Events;
+using YamlDotNet.RepresentationModel;
 
 namespace YamlDotNet.Core
 {
@@ -33,6 +35,8 @@ namespace YamlDotNet.Core
         /// and also after <see cref="MoveNext" /> returns false.
         /// </summary>
         ParsingEvent? Current { get; }
+
+        public List<YamlComment> CurrentComments();
 
         /// <summary>
         /// Moves to the next event.
