@@ -5,7 +5,7 @@
 
     <Configurations>Debug;Release</Configurations>
     <DocumentationFile>bin\$(Configuration)\YamlDotNet.xml</DocumentationFile>
-    <NoWarn>1591;1574</NoWarn>
+    <NoWarn>1591;1574;NU1507</NoWarn>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <WarningsAsErrors>true</WarningsAsErrors>
