@@ -81,7 +81,6 @@ namespace YamlDotNet.RepresentationModel
         private void Load(IParser parser, DocumentLoadingState state, bool consumeComments)
         {
             this.Comments = consumeComments ? parser.CurrentComments() : [];
-            
             var scalar = parser.Consume<Scalar>();
             Load(scalar, state);
 
