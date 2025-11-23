@@ -26,6 +26,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace YamlDotNet.RepresentationModel;
+
 public class YamlComment
 {
     public string Text { get; }
